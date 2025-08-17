@@ -1,8 +1,12 @@
 # Kitchen.bot 🍳
 
-#LIVE on render - https://kitchen-bot-9yee.onrender.com/
-
 A web application for kitchen management and recipe organization, powered by OpenAI's AI technology to provide intelligent cooking assistance and recipe recommendations.
+
+## 🌐 Live Demo
+
+**Live on Render**: [https://kitchen-bot-9yee.onrender.com/](https://kitchen-bot-9yee.onrender.com/)
+
+> *Experience Kitchen.bot in action with full AI-powered recipe generation and kitchen management features.*
 
 ## 🚀 What is Kitchen.bot?
 
@@ -69,8 +73,18 @@ The application uses the following OpenAI environment variables:
 - **Backend**: Node.js, Express.js
 - **Frontend**: EJS templating engine
 - **AI Integration**: OpenAI GPT API
-- **Styling**: CSS3 with modern responsive design
+- **Styling**: CSS3 with modern responsive design (optimized for performance)
 - **Package Manager**: npm
+
+## 📊 Performance & Optimization
+
+### CSS Optimization
+The application's CSS has been optimized for better performance:
+- **main.css**: Reduced from 259 to 164 lines (37% reduction)
+- **purchase.css**: Reduced from 595 to 331 lines (44% reduction)
+- **Total savings**: 359 lines of CSS code
+- **Maintained**: Full visual appearance and functionality
+- **Benefits**: Faster loading, easier maintenance, better performance
 
 ## 📁 Project Structure
 
@@ -85,6 +99,3 @@ Kitchen.bot/
 └── .gitignore       # Git ignore rules
 ```
 
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
