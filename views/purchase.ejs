@@ -1,0 +1,230 @@
+<%- include("partials/header.ejs"); -%>
+
+  <div class="box" id="heading">
+    <h1>Purchased Items</h1>
+  </div>
+  
+  <div class="box">
+    <% if (purchasedItems.length === 0) { %>
+      <div class="empty-state">
+        <p>No purchased items yet</p>
+      </div>
+    <% } else { %>
+   
+      <% purchasedItems.forEach(item => { %>
+        <div class="item purchased-item">
+          <form action="/delete-purchased" method="post" class="delete-form">
+            <input type="hidden" name="deletePurchasedItemId" value="<%= item.id %>">
+            <button type="submit" class="delete-btn">❌</button>
+          </form>
+          <div class="purchased-item-content">
+            <div class="purchased-item-info">
+              <p><%= item.title %></p>
+              <div class="expiry-date-section">
+                <div class="expiry-input-section">
+                  <label for="expiry-<%= item.id %>">Expiry Date:</label>
+                  <input type="date" id="expiry-<%= item.id %>" value="<%= item.expiryDate || '' %>">
+                </div>
+              </div>
+            </div>
+            <div class="right-section">
+              <div class="expiry-status" id="expiry-status-<%= item.id %>" style="display: none;"></div>
+              <div class="purchased-checkmark" onclick="showStatus(<%= item.id %>)">✓</div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    <% } %>
+  </div>
+
+  <hr class="divider">
+  <div class="selection-section">
+    <h3>Select items:</h3>
+    <div class="items-grid">
+      <% purchasedItems.forEach(item => { %>
+        <div class="item-checkbox">
+          <input type="checkbox" id="item-<%= item.id %>" value="<%= item.id %>" class="item-selector">
+          <label for="item-<%= item.id %>"><%= item.title %></label>
+        </div>
+      <% }); %>
+    </div>
+    <button class="analyze-btn" onclick="analyzeSelectedItems()">Gimme recipe!😋</button>
+  </div>
+
+  <!-- Recipe Display Section -->
+  <div id="recipe-section" class="recipe-section" style="display: none;">
+    <h3>Generated Recipe</h3>
+    <div id="recipe-content" class="recipe-content"></div>
+    <button class="close-recipe-btn" onclick="closeRecipe()">Close Recipe</button>
+  </div>
+
+
+  <div class="navigation-links">
+    <a href="/" class="back-link">← Back to Shopping List</a>
+  </div>
+
+  <script>
+    let selectedItems = [];
+
+    function showStatus(itemId) {
+      const dateInput = document.getElementById('expiry-' + itemId);
+      const statusDiv = document.getElementById('expiry-status-' + itemId);
+      
+      if (!dateInput.value) return;
+      
+      updateDate(itemId, dateInput.value);
+      
+      const daysRemaining = Math.ceil((new Date(dateInput.value) - new Date()) / (1000 * 60 * 60 * 24));
+      
+      let statusClass, statusText;
+      
+      if (daysRemaining > 7) {
+        statusClass = 'valid';
+        statusText = 'Valid - ' + daysRemaining + ' days remaining';
+      } else if (daysRemaining > 0) {
+        statusClass = 'expiring-soon';
+        statusText = 'Expiring soon - ' + daysRemaining + ' days remaining';
+      } else {
+        statusClass = 'expired';
+        statusText = 'Expired';
+      }
+      
+      statusDiv.innerHTML = '<div class="expiry-status ' + statusClass + '">' + statusText + '</div>';
+      statusDiv.style.display = 'block';
+    }
+
+    function updateDate(itemId, date) {
+      fetch('/update-expiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemId, expiryDate: date })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) console.log('Date updated successfully');
+      })
+      .catch(error => console.error('Error:', error));
+    }
+
+    // Add event listeners for checkboxes
+    document.addEventListener('DOMContentLoaded', function() {
+      const checkboxes = document.querySelectorAll('.item-selector');
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          const itemId = parseInt(this.value);
+          const itemName = this.nextElementSibling.textContent; // Get the label text
+          
+          if (this.checked) {
+            selectedItems.push(itemName);
+          } else {
+            selectedItems = selectedItems.filter(name => name !== itemName);
+          }
+          console.log('Selected items:', selectedItems);
+        });
+      });
+    });
+
+    function analyzeSelectedItems() {
+      if (selectedItems.length === 0) {
+        alert('Please select at least one item for recipe generation');
+        return;
+      }
+      
+      // Show loading state
+      const analyzeBtn = document.querySelector('.analyze-btn');
+      const originalText = analyzeBtn.textContent;
+      analyzeBtn.textContent = 'Generating Recipe...';
+      analyzeBtn.disabled = true;
+      
+      fetch('/generate-recipe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ selectedItems })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          displayRecipe(data.recipe, data.ingredients);
+        } else {
+          alert('Error: ' + data.error);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to generate recipe. Please try again.');
+      })
+      .finally(() => {
+        // Restore button state
+        analyzeBtn.textContent = originalText;
+        analyzeBtn.disabled = false;
+      });
+    }
+
+    function displayRecipe(recipe, ingredients) {
+      const recipeSection = document.getElementById('recipe-section');
+      const recipeContent = document.getElementById('recipe-content');
+      
+      // Check if we have structured recipe data
+      if (recipe && recipe.title && recipe.ingredients) {
+        // Structured recipe display with emojis
+        recipeContent.innerHTML = `
+          <div class="recipe-ingredients">
+            <strong> Ingredients used:</strong> ${ingredients.join(', ')}
+          </div>
+          <div class="recipe-result">
+            <h3>🍽️ ${recipe.title}</h3>
+            
+            <div class="recipe-meta">
+              <span class="meta-item">⏱️ ${recipe.cooking_time || 'N/A'}</span>
+              <span class="meta-item">👥 ${recipe.servings || 'N/A'}</span>
+              <span class="meta-item">📊 ${recipe.difficulty || 'N/A'}</span>
+            </div>
+            
+            <div class="recipe-section">
+              <h4>📋 Ingredients:</h4>
+              <ul>
+                ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+              </ul>
+            </div>
+            
+            <div class="recipe-section">
+              <h4>👨‍🍳 Instructions:</h4>
+              <ol>
+                ${recipe.instructions.map(instruction => `<li>${instruction}</li>`).join('')}
+              </ol>
+            </div>
+            
+            ${recipe.tips ? `
+              <div class="recipe-section">
+                <h4>💡 Tips:</h4>
+                <p>${recipe.tips}</p>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      } else {
+        // Fallback to simple display
+        const formattedRecipe = recipe.content ? recipe.content.replace(/\n/g, '<br>') : recipe.replace(/\n/g, '<br>');
+        recipeContent.innerHTML = `
+          <div class="recipe-ingredients">
+            <strong>🥕 Ingredients used:</strong> ${ingredients.join(', ')}
+          </div>
+          <div class="recipe-result">
+            <strong>🍽️ Recipe from ChatGPT:</strong><br><br>
+            ${formattedRecipe}
+          </div>
+        `;
+      }
+      
+      recipeSection.style.display = 'block';
+      
+      // Scroll to recipe section
+      recipeSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closeRecipe() {
+      document.getElementById('recipe-section').style.display = 'none';
+    }
+  </script>
+  
+  <%- include("partials/footer.ejs"); -%>
