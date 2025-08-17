@@ -1,13 +1,16 @@
 # Kitchen.bot 🍳
 
-A web application for kitchen management and recipe organization.
+A web application for kitchen management and recipe organization, powered by OpenAI's AI technology to provide intelligent cooking assistance and recipe recommendations.
 
-## Features
+## 🚀 What is Kitchen.bot?
 
-- Recipe management and organization
-- Purchase planning and tracking
-- Modern, responsive web interface
-- Built with Node.js and Express
+Kitchen.bot is your AI-powered kitchen companion that helps you:
+- Discover new recipes based on available ingredients
+- Get cooking tips and techniques from AI
+- Plan meals and shopping lists intelligently
+- Learn about food nutrition and substitutions
+- Manage your kitchen inventory efficiently
+
 
 ## Getting Started
 
@@ -42,7 +45,32 @@ npm start
 
 5. Open your browser and navigate to `http://localhost:3000`
 
-## Project Structure
+## 🤖 OpenAI Integration
+
+Kitchen.bot leverages OpenAI's powerful GPT models to provide intelligent cooking assistance:
+
+- **Recipe Generation**: Create unique recipes based on available ingredients
+- **Cooking Tips**: Get expert advice on cooking techniques and methods
+- **Ingredient Substitutions**: Find alternatives for missing ingredients
+- **Meal Planning**: AI-powered meal suggestions based on preferences
+- **Nutrition Guidance**: Get detailed nutritional information and recommendations
+
+### OpenAI API Configuration
+
+The application uses the following OpenAI environment variables:
+- `OPENAI_API_KEY` - Your OpenAI API key
+- `OPENAI_MODEL` - GPT model to use (default: gpt-4o-mini)
+- `OPENAI_MAX_TOKENS` - Maximum tokens per response
+
+## 🛠️ Technologies Used
+
+- **Backend**: Node.js, Express.js
+- **Frontend**: EJS templating engine
+- **AI Integration**: OpenAI GPT API
+- **Styling**: CSS3 with modern responsive design
+- **Package Manager**: npm
+
+## 📁 Project Structure
 
 ```
 Kitchen.bot/
@@ -51,16 +79,10 @@ Kitchen.bot/
 ├── index.js         # Main application file
 ├── package.json     # Project dependencies
 ├── .env.example     # Environment variables template
+├── screenshots/     # Application screenshots
 └── .gitignore       # Git ignore rules
 ```
 
-## Technologies Used
-
-- **Backend**: Node.js, Express.js
-- **Frontend**: EJS templating engine
-- **Styling**: CSS3
-- **Package Manager**: npm
-
-## License
+## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
