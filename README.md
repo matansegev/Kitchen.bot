@@ -1,5 +1,7 @@
 # Kitchen.bot 🍳
 
+#LIVE on render - https://kitchen-bot-9yee.onrender.com/
+
 A web application for kitchen management and recipe organization, powered by OpenAI's AI technology to provide intelligent cooking assistance and recipe recommendations.
 
 ## 🚀 What is Kitchen.bot?
