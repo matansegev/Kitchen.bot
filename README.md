@@ -29,12 +29,18 @@ cd Kitchen.bot
 npm install
 ```
 
-3. Start the application
+3. Set up environment variables
+```bash
+cp .env.example .env
+# Edit .env file with your configuration
+```
+
+4. Start the application
 ```bash
 npm start
 ```
 
-4. Open your browser and navigate to `http://localhost:3000`
+5. Open your browser and navigate to `http://localhost:3000`
 
 ## Project Structure
 
@@ -43,7 +49,9 @@ Kitchen.bot/
 ├── public/          # Static assets (CSS, images)
 ├── views/           # EJS templates
 ├── index.js         # Main application file
-└── package.json     # Project dependencies
+├── package.json     # Project dependencies
+├── .env.example     # Environment variables template
+└── .gitignore       # Git ignore rules
 ```
 
 ## Technologies Used
