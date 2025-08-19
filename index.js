@@ -22,14 +22,17 @@ let shoppingList = [];
 let purchasedItems = [];
 let itemIdCounter = 1; // Counter for unique IDs
 
+// Displays the home page with shopping list
 app.get("/", (req, res) => {
   res.render("index.ejs", { listItems: shoppingList });
 });
 
+// Displays the purchased items page
 app.get("/purchase", (req, res) => {
   res.render("purchase.ejs", { purchasedItems });
 });
 
+// Adds a new item to the shopping list
 app.post("/add", (req, res) => {
   const newItem = req.body.newItem;
   if (newItem.trim() !== "") {
@@ -39,29 +42,33 @@ app.post("/add", (req, res) => {
   res.redirect("/");
 });
 
+// Deletes an item from the shopping list
 app.post("/delete", (req, res) => {
   const id = parseInt(req.body.deleteItemId);
   shoppingList = shoppingList.filter(item => item.id !== id);
   res.redirect("/");
 });
 
+// Deletes an item from the purchased items list
 app.post("/delete-purchased", (req, res) => {
   const id = parseInt(req.body.deletePurchasedItemId);
   purchasedItems = purchasedItems.filter(item => item.id !== id);
   res.redirect("/purchase");
 });
 
+// Updates the expiry date of a purchased item
 app.post("/update-expiry", (req, res) => {
   const { itemId, expiryDate } = req.body;
   const item = purchasedItems.find(item => item.id === parseInt(itemId));
   if (item) {
     item.expiryDate = expiryDate;
-    res.json({ success: true });
+    res.redirect("/purchase");
   } else {
-    res.json({ success: false, error: "Item not found" });
+    res.redirect("/purchase?error=item-not-found");
   }
 });
 
+// Moves all items from shopping list to purchased items list
 app.post("/purchase", (req, res) => {
   shoppingList.forEach(item => {
     purchasedItems.push({
@@ -73,7 +80,7 @@ app.post("/purchase", (req, res) => {
   res.redirect("/purchase");
 });
 
-// AI recipe generation route
+// Generates a new recipe using AI based on selected ingredients
 app.post("/generate-recipe", async (req, res) => {
   try {
     const { selectedItems } = req.body;
@@ -144,6 +151,7 @@ app.post("/generate-recipe", async (req, res) => {
   }
 });
 
+// Starts the server on the defined port
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
