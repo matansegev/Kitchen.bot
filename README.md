@@ -67,6 +67,7 @@ The application uses the following OpenAI environment variables:
 - `OPENAI_API_KEY` - Your OpenAI API key
 - `OPENAI_MODEL` - GPT model to use (default: gpt-4o-mini)
 - `OPENAI_MAX_TOKENS` - Maximum tokens per response
+- `OPENAI_TEMP` - Temperature setting for AI creativity (0.0-1.0)
 
 ## 🛠️ Technologies Used
 

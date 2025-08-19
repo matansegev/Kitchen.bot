@@ -81,6 +81,7 @@ app.post("/purchase", (req, res) => {
 });
 
 // Generates a new recipe using AI based on selected ingredients
+// Uses environment variables: OPENAI_MODEL, OPENAI_MAX_TOKENS, OPENAI_TEMP
 app.post("/generate-recipe", async (req, res) => {
   try {
     const { selectedItems } = req.body;
@@ -104,7 +105,7 @@ app.post("/generate-recipe", async (req, res) => {
     IMPORTANT: Respond ONLY with valid JSON. Do not include any other text or explanations.`;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: process.env.OPENAI_MODEL,
       messages: [
         {
           role: "system",
@@ -115,8 +116,8 @@ app.post("/generate-recipe", async (req, res) => {
           content: prompt
         }
       ],
-      max_tokens: 700,
-      temperature: 0.3,
+      max_tokens: parseInt(process.env.OPENAI_MAX_TOKENS) ,
+      temperature: parseFloat(process.env.OPENAI_TEMP) ,
     });
 
     const recipeText = completion.choices[0].message.content;
