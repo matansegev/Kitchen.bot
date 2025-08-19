@@ -303,8 +303,8 @@
 @media (max-width: 480px) {
   .selection-section,
   .recipe-section {
-    width: 98%;
-    padding: 10px;
+    width: 90%;
+    padding: 15px;
   }
   
   .recipe-content {
